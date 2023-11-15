@@ -1,0 +1,41 @@
+OBJ=common.o eval.o functions.o vars.o parse.o file.o help.o
+LIBS=@LIBS@
+FLAGS=
+STATIC_LIBUSEFUL=@LIBUSEFUL_BUNDLED@
+PREFIX=@prefix@
+
+ccalc: $(OBJ) $(STATIC_LIBUSEFUL) main.c
+	gcc $(FLAGS) -occalc main.c $(OBJ) $(LIBS) $(STATIC_LIBUSEFUL)
+
+$(STATIC_LIBUSEFUL):
+	make -C libUseful-5
+
+common.o: common.h common.c
+	gcc $(FLAGS) -c common.c
+
+eval.o: eval.h eval.c
+	gcc $(FLAGS) -c eval.c
+
+functions.o: functions.h functions.c
+	gcc $(FLAGS) -c functions.c
+
+vars.o: vars.h vars.c
+	gcc $(FLAGS) -c vars.c
+
+parse.o: parse.h parse.c
+	gcc $(FLAGS) -c parse.c
+
+file.o: file.h file.c
+	gcc $(FLAGS) -c file.c
+
+help.o: help.h help.c
+	gcc $(FLAGS) -c help.c
+
+check: ccalc
+	./test.sh
+
+install: ccalc
+	cp -f ccalc $(PREFIX)/bin
+
+clean: 
+	rm -f *.o *.orig */*.o ccalc
